@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="style.css">
+  <script type="text/javascript" src="paperJS/dist/paper-full.js"></script>
+  <script type="text/paperscript" canvas="myCanvas">
+    var count = 50;
+    // Create a symbol, which we will use to place instances of later:
+    var path = new Path.Circle({
+    	center: [0, 0],
+    	radius: 5,
+    	fillColor: 'white',
+    	strokeColor: 'black'
+    });
+
+    var symbol = new Symbol(path);
+    // Place the instances of the symbol:
+    for (var i = 0; i < count; i++) {
+    	// The center position is a random point in the view:
+    	var center = Point.random() * view.size;
+    	var placed = symbol.place(center);
+    	placed.scale(i / count + 0.001);
+    	placed.data.vector = new Point({
+    		angle: Math.random() * 360,
+    		length : (i / count) * Math.random() / 5
+    	});
+    }
+    var vector = new Point({
+    	angle: 45,
+    	length: 0
+    });
+    var mouseVector = vector.clone();
+    function onMouseMove(event) {
+    	mouseVector = view.center - event.point;
+    	return false; // Prevent touch scrolling
+    }
+    // The onFrame function is called up to 60 times a second:
+    function onFrame(event) {
+    	vector = vector + (mouseVector - vector) / 30;
+    	// Run through the active layer's children list and change
+    	// the position of the placed symbols:
+    	for (var i = 0; i < count; i++) {
+    		var item = project.activeLayer.children[i];
+    		var size = item.bounds.size;
+    		var length = vector.length / 10 * size.width / 10;
+    		item.position += vector.normalize(length) + item.data.vector;
+    		keepInView(item);
+    	}
+    }
+    function keepInView(item) {
+    	var position = item.position;
+    	var viewBounds = view.bounds;
+    	if (position.isInside(viewBounds))
+    		return;
+    	var itemBounds = item.bounds;
+    	if (position.x > viewBounds.width + 5) {
+    		position.x = -item.bounds.width;
+    	}
+
+    	if (position.x < -itemBounds.width - 5) {
+    		position.x = viewBounds.width;
+    	}
+
+    	if (position.y > viewBounds.height + 5) {
+    		position.y = -itemBounds.height;
+    	}
+
+    	if (position.y < -itemBounds.height - 5) {
+    		position.y = viewBounds.height
+    	}
+    }
+  </script>
+  <title>Oleksii's Project</title>
+</head>
+
+<body>
+
+<nav>
+  <canvas id="myCanvas" resize>
+  </canvas>
+</nav>
+
+  <header>
+    <h1 class="title">Oleksi's Page</h1>
+    <button class="btn">Check out!</button>
+  </header>
+
+  <div class="content">
+    <h1>Education and Training</h1>
+    <main>
+      <section class="description">
+        <ul class="education">
+          <li>
+            <h3>Italian language and culture</h3>
+            <p>University for Foreigners of Perugia, Perugia, Italy</p>
+          </li>
+          <li>
+            <h3>Bachelor's degree in Jurisprudence</h3>
+            <p>National University "Yaroslav the Wise Law Academy of Ukraine", Kharkiv, Ukraine</p>
+          </li>
+          <li>
+            <h3>Secondary education</h3>
+            <p>Lysenko music school, Kiev</p>
+          </li>
+        </ul>
+      </section>
+      <img src="img/87123995_1232005453676216_2437763737164185600_n.jpg" alt="My photo">
+    </main>
+  </div>
+
+  <div class="link">
+    <a class="button" href="#skills">My Skills</a>
+    <i class="fas fa-sort-down fa-3x"></i>
+  </div>
+  <div class="skills_langs">
+    <section class="skills" id="skills">
+      <h1>MY MAIN SKILLS</h1>
+      <ul>
+        <li>
+          <p>HTML 5</p>
+        </li>
+        <li>
+          <p>CSS 3</p>
+        </li>
+        <li>
+          <p>JavaScript, ES6,7+ </p>
+        </li>
+        <li>
+          <p>Java</p>
+        </li>
+        <li>
+          <p>jQuery</p>
+        </li>
+        <li>
+          <p>Bootstrap 4</p>
+        </li>
+        <li>
+          <p>MongoDB, mySQL</p>
+        </li>
+        <li>
+          <p>Node JS</p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="languages" id="languages">
+      <h1>LANGUAGES</h1>
+      <ul>
+        <li>
+          <p>English - B2</p>
+        </li>
+        <li>
+          <p>Italian - B2</p>
+        </li>
+        <li>
+          <p>Russian, ukrainian - Mother tongues</p>
+        </li>
+    </section>
+  </div>
+
+  <section class="bio">
+    <h1>SHORT BIO</h1>
+    <ul>
+      <li>
+        <article class="bio">
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </article>
+      </li>
+    </ul>
+  </section>
+
+  <section class="job-description">
+    <h1>PREFERED POSITION & SALARY</h1>
+    <ul>
+      <li>
+        <p>Junior Full-stack</p>
+      </li>
+      <li>
+        <p>Junior Front-end</p>
+      </li>
+      <li>
+        <p>Junior Back-end</p>
+      </li>
+      <li>
+        <p>$1500</p>
+      </li>
+  </section>
+
+  <footer>
+    <p>All rights reserved &copy; <br> Oleskiy's page.</p>
+    <div class="icons">
+      <a href="https://www.facebook.com/alessio.suvorov"><i class="fab fa-facebook-square fa-3x"></i></a>
+      <a href="https://github.com/oleksii-suvorov"><i class="fab fa-github fa-3x"></i></a>
+      <a href="mailto:alexskan@ukr.net?subject=feedback"><i class="far fa-envelope-open fa-3x"></i></a>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="app.js"></script>
+</body>
+</html>
